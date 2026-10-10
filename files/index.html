@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>UniIDE — онлайн-редактор кода: Python, JavaScript, HTML</title>
+<link rel="stylesheet" href="css/base.css">
+<link rel="stylesheet" href="css/header.css">
+<link rel="stylesheet" href="css/layout.css">
+<link rel="stylesheet" href="css/widgets.css">
+</head>
+<body>
+<div class="app">
+  <header>
+    <div class="brand">
+      <div class="logo"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M8 7l-5 5 5 5"/><path d="M16 7l5 5-5 5"/><path d="M13.5 5l-3 14"/></svg></div>
+      <div><b>Uni<span>IDE</span></b><small>PYTHON · JAVASCRIPT · HTML</small></div>
+    </div>
+    <div class="seg" id="langs">
+      <button class="lt on" data-l="python"><i class="dot python"></i>Python</button>
+      <button class="lt" data-l="js"><i class="dot js"></i>JavaScript</button>
+      <button class="lt" data-l="html"><i class="dot html"></i>HTML</button>
+    </div>
+    <span class="sp"></span>
+    <button class="btn" id="clr">Очистить</button>
+    <button class="btn icon" id="theme" title="Сменить тему">🌙</button>
+    <button class="btn stop" id="stop" style="display:none">■ Стоп</button>
+    <button class="run" id="run"><svg width="14" height="14" viewBox="0 0 24 24" fill="#fff"><path d="M6 4l14 8-14 8z"/></svg>Запустить</button>
+  </header>
+
+  <div class="body">
+    <aside>
+      <div class="sh"><span id="shl">Проект · Python</span></div>
+      <div id="files"></div>
+      <div class="sbtns">
+        <button class="btn pri" id="addf">＋ Новый файл</button>
+        <div class="types" id="types">
+          <button class="btn t-html" data-x="html">HTML</button>
+          <button class="btn t-css" data-x="css">CSS</button>
+          <button class="btn t-js" data-x="js">JS</button>
+        </div>
+        <button class="btn" id="dl">⬇ Скачать файл</button>
+        <button class="btn" id="rst">↺ Сбросить проект</button>
+      </div>
+    </aside>
+
+    <section class="pane">
+      <div class="top"><div class="cur"><span class="ico" id="curico">PY</span><span id="curname">main.py</span></div><span class="hint"><kbd>Ctrl</kbd> + <kbd>Enter</kbd> — запуск</span></div>
+      <div class="ed"><div id="ace"></div></div>
+    </section>
+
+    <section class="pane">
+      <div class="top otabs">
+        <div style="height:100%;display:flex">
+          <button class="ot on" id="otmain" data-t="main">Терминал</button>
+          <button class="ot" id="otprobs" data-t="probs">Проблемы <span id="pc">0</span></button>
+        </div>
+        <span id="stat"></span>
+      </div>
+      <div id="termwrap">
+        <div id="out"></div>
+        <div id="row"><span id="ps"></span><input id="ti" type="text" autocomplete="off" autocapitalize="off" spellcheck="false" disabled></div>
+      </div>
+      <div id="probs"></div>
+      <iframe id="frame" sandbox="allow-scripts allow-modals allow-forms"></iframe>
+    </section>
+  </div>
+
+  <div id="toast"></div>
+  <footer>
+    <span><i class="ok"></i><b id="sblang">Python</b> · <span id="sbpos">Стр 1, Стлб 1</span> · UTF-8</span>
+    <span id="sbsave">UniIDE · онлайн-редактор кода</span>
+  </footer>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.32.9/ace.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.32.9/ext-language_tools.js"></script>
+<script src="js/01-files.js"></script>
+<script src="js/02-editor.js"></script>
+<script src="js/03-autocomplete.js"></script>
+<script src="js/04-sidebar.js"></script>
+<script src="js/05-terminal.js"></script>
+<script src="js/06-workers.js"></script>
+<script src="js/07-python.js"></script>
+<script src="js/08-python-start.js"></script>
+<script src="js/09-javascript.js"></script>
+<script src="js/10-html-preview.js"></script>
+<script src="js/11-main.js"></script>
+</body>
+</html>
