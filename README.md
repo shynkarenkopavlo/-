@@ -31,6 +31,12 @@ css/
   layout.css          боковая панель, редактор, терминал
   widgets.css         уведомления, окно подсказок, статус-бар
   editor.css          полоски отступов и цвета HTML-кода
+img/
+  logo.png            логотип в шапке сайта
+  favicon.ico         иконка вкладки браузера (16/32/48 px)
+  favicon-32.png      иконка вкладки (PNG)
+  apple-touch-icon.png  иконка для iPhone/iPad
+  icon-192.png        иконка для Android
 js/                   подключаются в указанном порядке
   01-files.js         элементы страницы, файлы проекта по умолчанию
   02-editor.js        редактор Ace, тема, сохранение в localStorage
