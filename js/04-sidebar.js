@@ -31,7 +31,7 @@ function rename(i,span){
     if(done)return;done=true;
     var n=inp.value.trim().replace(/[\\\/]/g,'');
     if(auto&&n){if(n.toLowerCase()===tail)n='';else if(!hasTail(n))n+=tail}
-    if(ok&&n&&!LANGS[lang].files.some(function(g,j){return j!==i&&g.name===n})){f.name=n;if(f.sess)f.sess.setMode(modeFor(n))}
+    if(ok&&n&&!LANGS[lang].files.some(function(g,j){return j!==i&&g.name===n})){f.name=n;if(f.sess){f.sess.setMode(modeFor(n));sessOpts(f)}}
     renderTabs();
   }
   inp.onblur=function(){fin(true)};

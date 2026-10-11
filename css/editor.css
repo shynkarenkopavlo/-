@@ -1,0 +1,22 @@
+/* ---------- редактор: полоски отступов и цвета HTML ---------- */
+:root{
+  --guide:rgba(110,120,150,.30);--guide-on:rgba(110,120,150,.70);
+  --h-tag:#cf222e;--h-attr:#9a6700;--h-str:#116329;--h-punct:#6e7781;--h-doc:#8250df;--h-ent:#0550ae;
+}
+:root[data-theme="dark"]{
+  --guide:rgba(150,160,190,.24);--guide-on:rgba(180,190,220,.65);
+  --h-tag:#ff7b72;--h-attr:#e3b341;--h-str:#7ee787;--h-punct:#8b949e;--h-doc:#d2a8ff;--h-ent:#79c0ff;
+}
+
+/* вертикальные полоски отступов (какой блок внутри какого) */
+.ace_editor .ace_indent-guide{background:none!important;box-shadow:inset -1px 0 0 var(--guide)}
+.ace_editor .ace_indent-guide-active{box-shadow:inset -1px 0 0 var(--guide-on)}
+
+/* HTML: теги, атрибуты, значения и скобки разными цветами */
+.ace_editor .ace_meta.ace_tag{color:var(--h-punct)!important}                         /* < > </ /> */
+.ace_editor .ace_meta.ace_tag.ace_tag-name{color:var(--h-tag)!important}              /* div, p, body … */
+.ace_editor .ace_entity.ace_other.ace_attribute-name{color:var(--h-attr)!important}   /* class, href … */
+.ace_editor .ace_keyword.ace_operator.ace_attribute-equals{color:var(--h-punct)!important}
+.ace_editor .ace_string.ace_attribute-value,.ace_editor .ace_attribute-value{color:var(--h-str)!important}
+.ace_editor .ace_doctype,.ace_editor .ace_xml-pe{color:var(--h-doc)!important}        /* <!DOCTYPE html> */
+.ace_editor .ace_constant.ace_language.ace_escape.ace_xml{color:var(--h-ent)!important}  /* &nbsp; */

@@ -17,7 +17,16 @@ var active={python:0,js:0,html:0},lang='python',outTab='main';
 var MODES={py:'python',js:'javascript',html:'html',htm:'html',css:'css',json:'json',md:'markdown',txt:'text'};
 function extOf(n){return n.split('.').pop().toLowerCase()}
 function modeFor(n){return 'ace/mode/'+(MODES[extOf(n)]||'text')}
-function sess(f){if(!f.sess){f.sess=ace.createEditSession(f.code,modeFor(f.name));f.sess.setTabSize(4);f.sess.setUseSoftTabs(true)}return f.sess}
+/* Python — отступ 4 пробела, HTML/CSS/JS — 2; встроенные проверки-воркеры Ace отключены */
+function sessOpts(f){var e=extOf(f.name);f.sess.setTabSize(e==='py'?4:2);f.sess.setUseSoftTabs(true)}
+function sess(f){
+  if(!f.sess){
+    f.sess=ace.createEditSession(f.code);
+    try{f.sess.setUseWorker(false)}catch(x){}
+    f.sess.setMode(modeFor(f.name));sessOpts(f);
+  }
+  return f.sess;
+}
 function fileCode(f){return f.sess?f.sess.getValue():f.code}
 function curFile(){return LANGS[lang].files[active[lang]]}
 

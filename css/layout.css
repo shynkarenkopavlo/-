@@ -1,7 +1,7 @@
 /* ---------- тело: сайдбар | редактор | вывод ---------- */
-.body{flex:1;min-height:0;display:grid;grid-template-columns:200px minmax(0,1fr) minmax(0,1fr)}
-@media (max-width:900px){.body{grid-template-columns:1fr;grid-template-rows:auto minmax(0,1fr) minmax(0,1fr)}}
-aside{display:flex;flex-direction:column;min-height:0;background:var(--panel2);border-right:1px solid var(--line)}
+.body{--sbw:200px;--ed:1000fr;--out:1000fr;flex:1;min-height:0;display:grid;grid-template-columns:var(--sbw) 6px minmax(0,var(--ed)) 6px minmax(0,var(--out))}
+@media (max-width:900px){.body{grid-template-columns:1fr;grid-template-rows:auto minmax(0,var(--ed)) 6px minmax(0,var(--out))}#gs{display:none}}
+aside{display:flex;flex-direction:column;min-height:0;background:var(--panel2)}
 .sh{padding:14px 14px 8px;font-size:11px;letter-spacing:.09em;text-transform:uppercase;color:var(--muted);font-weight:650;display:flex;justify-content:space-between;align-items:center}
 #files{flex:1;min-height:0;overflow:auto;padding:4px 8px}
 .fi{display:flex;align-items:center;gap:9px;padding:7px 9px;border-radius:9px;cursor:pointer;color:var(--muted);transition:.12s;margin-bottom:2px;border:1px solid transparent}
@@ -58,4 +58,15 @@ kbd{font:inherit;font-size:10.5px;border:1px solid var(--line);border-bottom-wid
 #ps{color:var(--accent);white-space:pre;font-weight:700}
 #ti{flex:1;min-width:0;border:0;outline:0;background:transparent;color:var(--text);font:inherit;padding:0}
 #frame{flex:1;border:0;background:#fff;display:none;width:100%}
-
+/* разделители между панелями: потяните, чтобы изменить размер */
+.gutter{position:relative;background:var(--line);cursor:col-resize;touch-action:none;transition:background .15s;z-index:2}
+.gutter:hover,.gutter.on{background:var(--accent)}
+.gutter:after{content:'';position:absolute;left:50%;top:50%;width:2px;height:32px;margin:-16px 0 0 -1px;border-radius:2px;background:var(--muted);opacity:.7}
+.gutter:hover:after,.gutter.on:after{background:#fff;opacity:.95}
+body.dragging{user-select:none;cursor:col-resize}
+body.dragging iframe{pointer-events:none}
+@media (max-width:900px){
+  #gv{cursor:row-resize}
+  #gv:after{width:32px;height:2px;margin:-1px 0 0 -16px}
+  body.dragging{cursor:row-resize}
+}

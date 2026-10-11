@@ -8,6 +8,7 @@
 <link rel="stylesheet" href="css/header.css">
 <link rel="stylesheet" href="css/layout.css">
 <link rel="stylesheet" href="css/widgets.css">
+<link rel="stylesheet" href="css/editor.css">
 </head>
 <body>
 <div class="app">
@@ -43,13 +44,15 @@
         <button class="btn" id="rst">↺ Сбросить проект</button>
       </div>
     </aside>
+    <div class="gutter" id="gs" title="Потяните, чтобы изменить ширину панели файлов (двойной щелчок — сбросить)"></div>
 
-    <section class="pane">
+    <section class="pane" id="paneEd">
       <div class="top"><div class="cur"><span class="ico" id="curico">PY</span><span id="curname">main.py</span></div><span class="hint"><kbd>Ctrl</kbd> + <kbd>Enter</kbd> — запуск</span></div>
       <div class="ed"><div id="ace"></div></div>
     </section>
+    <div class="gutter" id="gv" title="Потяните, чтобы изменить размер кода и терминала (двойной щелчок — сбросить)"></div>
 
-    <section class="pane">
+    <section class="pane" id="paneOut">
       <div class="top otabs">
         <div style="height:100%;display:flex">
           <button class="ot on" id="otmain" data-t="main">Терминал</button>
@@ -75,6 +78,12 @@
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.32.9/ace.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.32.9/ext-language_tools.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.32.9/mode-html.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.32.9/mode-css.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.32.9/mode-javascript.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.32.9/mode-python.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.32.9/theme-chrome.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.32.9/theme-tomorrow_night.js"></script>
 <script src="js/01-files.js"></script>
 <script src="js/02-editor.js"></script>
 <script src="js/03-autocomplete.js"></script>
@@ -86,5 +95,7 @@
 <script src="js/09-javascript.js"></script>
 <script src="js/10-html-preview.js"></script>
 <script src="js/11-main.js"></script>
+<script src="js/12-html-tools.js"></script>
+<script src="js/13-layout.js"></script>
 </body>
 </html>

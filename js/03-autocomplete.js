@@ -98,19 +98,138 @@
   };
   var JSM_ANY=uniq(mem('push pop shift unshift map filter reduce forEach find findIndex includes join slice splice sort reverse indexOf concat some every flat =length toUpperCase toLowerCase trim split replace startsWith endsWith substring charAt padStart repeat addEventListener querySelector getAttribute setAttribute =textContent =innerHTML =classList =style =value','метод'));
 
-  /* ===== HTML / CSS ===== */
-  var VOID={br:1,hr:1,img:1,input:1,meta:1,link:1};
-  var TAGS=('html head body div span p h1 h2 h3 h4 h5 h6 a img ul ol li table tr td th form input button label select option textarea link script style meta title header footer nav section article main aside br hr canvas video audio').split(' ').map(function(t){
-    return item(t,VOID[t]?t+' ${1}>':t+'>${1}</'+t+'>','тег',null,1000)});
-  var ATTRS=words('class id src href alt style type value placeholder name onclick rel charset content width height target for checked disabled title lang','атрибут',1000).map(function(o){o.snippet=o.caption+'="${1}"';return o});
-  var CSS_PROPS=('color background background-color font-size font-family font-weight margin padding border border-radius display flex justify-content align-items flex-direction flex-wrap gap position width height max-width min-height text-align box-shadow transition transform overflow cursor opacity z-index top left right bottom line-height letter-spacing text-decoration grid-template-columns').split(' ').map(function(p){return item(p,p+': ${1};','свойство CSS',null,1000)});
-  var CSS_VALS=words('block inline-block inline flex grid none auto center left right bold normal solid dashed relative absolute fixed sticky inherit transparent pointer hidden visible nowrap space-between column row 100% 0','значение',800);
+  /* ===== HTML ===== */
+  var VOID={area:1,base:1,br:1,col:1,embed:1,hr:1,img:1,input:1,link:1,meta:1,param:1,source:1,track:1,wbr:1};
+  var TAG_ROWS=[
+    ['html','корневой элемент страницы'],['head','служебная часть страницы'],['body','видимая часть страницы'],['title','заголовок вкладки браузера'],
+    ['meta','метаданные страницы'],['link','подключение внешнего файла (CSS, иконка)'],['style','стили CSS'],['script','скрипт JavaScript'],['base','базовый адрес ссылок'],
+    ['header','шапка страницы или раздела'],['footer','подвал'],['nav','блок навигации'],['main','основное содержимое'],['section','раздел'],['article','самостоятельная статья'],['aside','боковой блок'],
+    ['div','блок'],['span','строчный контейнер'],['p','абзац'],['h1','заголовок 1 уровня'],['h2','заголовок 2 уровня'],['h3','заголовок 3 уровня'],['h4','заголовок 4 уровня'],['h5','заголовок 5 уровня'],['h6','заголовок 6 уровня'],
+    ['a','ссылка'],['img','изображение'],['ul','маркированный список'],['ol','нумерованный список'],['li','элемент списка'],['dl','список определений'],['dt','термин'],['dd','описание термина'],
+    ['table','таблица'],['thead','шапка таблицы'],['tbody','тело таблицы'],['tfoot','подвал таблицы'],['tr','строка таблицы'],['td','ячейка таблицы'],['th','ячейка-заголовок'],['caption','подпись таблицы'],['colgroup','группа столбцов'],['col','столбец'],
+    ['form','форма'],['input','поле ввода'],['button','кнопка'],['label','подпись к полю'],['select','выпадающий список'],['option','пункт списка'],['optgroup','группа пунктов'],['textarea','многострочное поле'],['fieldset','группа полей'],['legend','заголовок группы полей'],['datalist','варианты для поля'],['output','результат вычисления'],['progress','индикатор прогресса'],['meter','шкала значения'],
+    ['br','перенос строки'],['hr','горизонтальная линия'],['strong','важный текст'],['em','выделение курсивом'],['b','жирный текст'],['i','курсив'],['u','подчёркнутый текст'],['s','зачёркнутый текст'],['small','мелкий текст'],['mark','текст-маркер'],['code','фрагмент кода'],['pre','текст с сохранением пробелов'],['kbd','клавиша'],['samp','пример вывода'],['var','переменная'],['sub','нижний индекс'],['sup','верхний индекс'],['blockquote','длинная цитата'],['q','короткая цитата'],['abbr','аббревиатура'],['cite','источник'],['time','дата и время'],['del','удалённый текст'],['ins','добавленный текст'],['wbr','возможный перенос слова'],
+    ['canvas','холст для рисования'],['video','видео'],['audio','аудио'],['source','источник медиа'],['track','субтитры'],['picture','адаптивное изображение'],['iframe','встроенная страница'],['embed','встроенный объект'],['object','внешний объект'],['param','параметр объекта'],['map','карта-изображение'],['area','область карты'],['svg','векторная графика'],
+    ['figure','иллюстрация'],['figcaption','подпись к иллюстрации'],['details','раскрывающийся блок'],['summary','заголовок раскрывающегося блока'],['dialog','диалоговое окно'],['template','шаблон'],['noscript','содержимое без JavaScript']
+  ];
+  var TAG_SNIP={
+    a:'a href="${1}">${2}</a>',img:'img src="${1}" alt="${2}">',input:'input type="${1:text}" name="${2}">',
+    link:'link rel="stylesheet" href="${1:style.css}">',script:'script src="${1:script.js}"><\/script>',meta:'meta name="${1}" content="${2}">',
+    button:'button type="${1:button}">${2}</button>',form:'form action="${1}" method="${2:post}">\n\t${0}\n</form>',
+    ul:'ul>\n\t<li>${0}</li>\n</ul>',ol:'ol>\n\t<li>${0}</li>\n</ol>',table:'table>\n\t<tr>\n\t\t<td>${0}</td>\n\t</tr>\n</table>',
+    label:'label for="${1}">${2}</label>',select:'select name="${1}">\n\t<option value="${2}">${0}</option>\n</select>',video:'video src="${1}" controls>${0}</video>'
+  };
+  function tagItems(withLt,score){
+    return TAG_ROWS.map(function(r){
+      var t=r[0],s=TAG_SNIP[t]||(VOID[t]?(' br hr wbr '.indexOf(' '+t+' ')>-1?t+'>':t+' ${1}>'):t+'>${1}</'+t+'>');
+      return item(t,(withLt?'':'<')+s,'тег',r[1],score||1000);
+    });
+  }
+  var TAGS=tagItems(true),TAGS_BARE=tagItems(false,900);
+  var HTML5=item('html5','<!DOCTYPE html>\n<html lang="ru">\n<head>\n\t<meta charset="UTF-8">\n\t<meta name="viewport" content="width=device-width, initial-scale=1.0">\n\t<title>${1:Документ}</title>\n</head>\n<body>\n\t${0}\n</body>\n</html>','шаблон','Каркас HTML-страницы',1100);
+  var HCOMMENT=item('comment','<!-- ${0} -->','шаблон','Комментарий',950);
+
+  var BOOL={checked:1,disabled:1,required:1,selected:1,hidden:1,controls:1,autoplay:1,loop:1,muted:1,multiple:1,readonly:1,defer:1,async:1,autofocus:1,open:1,reversed:1,allowfullscreen:1};
+  var GLOBAL_ATTRS='class id style title lang hidden tabindex contenteditable draggable spellcheck data- onclick onchange oninput onsubmit onload onkeydown onkeyup onmouseover onmouseout onfocus onblur'.split(' ');
+  var TAG_ATTRS={
+    a:'href target rel download',img:'src alt width height loading',
+    input:'type name value placeholder required disabled checked min max step maxlength readonly autocomplete autofocus',
+    button:'type name value disabled',form:'action method enctype autocomplete',label:'for',select:'name multiple required disabled',
+    option:'value selected disabled',textarea:'name rows cols placeholder required readonly maxlength',meta:'charset name content',
+    link:'rel href type media',script:'src type defer async',style:'media',iframe:'src width height allowfullscreen loading',
+    video:'src controls autoplay loop muted poster width height',audio:'src controls autoplay loop muted',source:'src type',
+    td:'colspan rowspan',th:'colspan rowspan scope',table:'border',ol:'start type reversed',canvas:'width height',svg:'width height viewBox xmlns',
+    fieldset:'disabled',details:'open',progress:'value max',meter:'value min max'
+  };
+  function attrItems(tag,tagText){
+    var have={};
+    tagText.replace(/"[^"]*"|'[^']*'/g,'""').replace(/^<[\w:-]+/,'').replace(/\s([a-zA-Z_:][\w:.-]*)/g,function(a,n){have[n.toLowerCase()]=1;return a});
+    var own=(TAG_ATTRS[tag]||'').split(' ').filter(Boolean),res=[];
+    function add(n,sc){
+      if(have[n])return;
+      var o=item(n,BOOL[n]?null:(n==='data-'?'data-${1}="${2}"':n+'="${1}"'),'атрибут',null,sc);
+      res.push(o);
+    }
+    own.forEach(function(n){add(n,1000)});
+    GLOBAL_ATTRS.forEach(function(n){if(own.indexOf(n)<0)add(n,900)});
+    return res;
+  }
+  var INPUT_TYPES='text password email number checkbox radio submit button file date time range color search tel url hidden reset image'.split(' ');
+  var ATTR_VALS={
+    target:'_blank _self _parent _top',rel:'stylesheet icon noopener noreferrer nofollow preload',method:'get post',
+    loading:'lazy eager',lang:'ru en uk de fr',charset:'UTF-8',autocomplete:'on off',enctype:'multipart/form-data application/x-www-form-urlencoded',
+    scope:'row col',contenteditable:'true false',draggable:'true false',spellcheck:'true false'
+  };
+  function attrValues(tag,attr){
+    var v;
+    if(attr==='type'){
+      v=tag==='input'?INPUT_TYPES:tag==='button'?['button','submit','reset']:tag==='script'?['module','text/javascript']:tag==='link'?['text/css']:[];
+    }else if(attr==='name'&&tag==='meta'){v='viewport description keywords author theme-color'.split(' ')}
+    else v=(ATTR_VALS[attr]||'').split(' ').filter(Boolean);
+    return v.map(function(x){return item(x,null,'значение',null,1000)});
+  }
+  function closeItems(all){
+    var st=(typeof htmlOpenStack==='function')?htmlOpenStack(all):[],seen={},res=[];
+    for(var i=st.length-1;i>=0;i--){
+      if(seen[st[i]])continue;seen[st[i]]=1;
+      var o=item(st[i],null,'закрыть тег','Закрывает открытый тег <'+st[i]+'>',1200-i);o.value=st[i]+'>';res.push(o);
+    }
+    return res;
+  }
+
+  /* ===== CSS ===== */
+  var CSS_PROPS=('color background background-color background-image background-size background-position background-repeat font-size font-family font-weight font-style margin margin-top margin-right margin-bottom margin-left padding padding-top padding-right padding-bottom padding-left border border-top border-bottom border-left border-right border-color border-width border-style border-radius outline display flex flex-direction flex-wrap flex-grow flex-shrink justify-content align-items align-self align-content gap row-gap column-gap position top left right bottom z-index width height min-width min-height max-width max-height text-align text-decoration text-transform text-shadow line-height letter-spacing white-space word-break overflow overflow-x overflow-y cursor opacity visibility box-shadow box-sizing transition transform animation float clear object-fit grid grid-template-columns grid-template-rows grid-column grid-row user-select pointer-events list-style content filter backdrop-filter').split(' ').map(function(p){return item(p,p+': ${1};','свойство CSS',null,1000)});
+  var CSS_VALS=words('block inline-block inline flex grid none auto center left right bold normal solid dashed relative absolute fixed sticky inherit transparent pointer hidden visible nowrap space-between column row 100% 0 red blue green white black gray orange yellow purple pink currentColor','значение',800);
+  var CSS_BY={
+    display:'block inline inline-block flex inline-flex grid none',position:'static relative absolute fixed sticky',
+    'flex-direction':'row column row-reverse column-reverse','flex-wrap':'nowrap wrap wrap-reverse',
+    'justify-content':'flex-start flex-end center space-between space-around space-evenly','align-items':'stretch flex-start flex-end center baseline',
+    'text-align':'left right center justify','font-weight':'normal bold 100 200 300 400 500 600 700 800 900','font-style':'normal italic',
+    overflow:'visible hidden scroll auto','overflow-x':'visible hidden scroll auto','overflow-y':'visible hidden scroll auto',
+    cursor:'pointer default text move not-allowed grab','text-decoration':'none underline line-through','text-transform':'none uppercase lowercase capitalize',
+    'border-style':'none solid dashed dotted double','box-sizing':'border-box content-box','background-repeat':'no-repeat repeat repeat-x repeat-y',
+    'white-space':'normal nowrap pre pre-wrap',visibility:'visible hidden',float:'none left right','user-select':'none auto text',
+    'object-fit':'cover contain fill none','pointer-events':'auto none'
+  };
+  function cssList(all){
+    var open=all.lastIndexOf('{'),close=all.lastIndexOf('}');
+    if(open<=close)return TAG_ROWS.map(function(r){return item(r[0],null,'селектор',null,900)});   /* вне блока { } — имена тегов-селекторов */
+    var seg=all.slice(Math.max(open,all.lastIndexOf(';'))+1),m=/^\s*([\w-]+)\s*:/.exec(seg);
+    if(m){var v=CSS_BY[m[1]];return v?words(v,'значение',1000).concat(CSS_VALS):CSS_VALS}
+    return CSS_PROPS;
+  }
 
   function fileKind(){
     var e=extOf(curFile().name);
     return e==='py'?'py':e==='js'?'js':e==='css'?'css':(e==='html'||e==='htm')?'html':'txt';
   }
   function odd(s,ch){return (s.split(ch).length-1)%2===1}
+  function allText(sess,pos,prefix){return sess.getTextRange({start:{row:0,column:0},end:{row:pos.row,column:pos.column-prefix.length}})}
+
+  function jsList(before,line){
+    var m;
+    if(/^\s*\/\//.test(line)||odd(before,'"')||odd(before,"'")||odd(before,'`'))return [];
+    if((m=/([A-Za-z_$][\w$]*)\.$/.exec(before)))return JSM[m[1]]||JSM_ANY;
+    if(/[\)\]"']\.$/.test(before))return JSM_ANY;
+    return JS_ALL;
+  }
+  function htmlList(sess,pos,prefix,before){
+    var all=allText(sess,pos,prefix),ctx=(typeof htmlContext==='function')?htmlContext(all):'html';
+    if(ctx==='style')return cssList(all);
+    if(ctx==='script')return jsList(before,sess.getLine(pos.row));
+    var lt_=before.lastIndexOf('<'),gt=before.lastIndexOf('>');
+    if(/<\/$/.test(before))return closeItems(all);
+    if(/<$/.test(before))return TAGS;
+    if(lt_>gt){
+      var tagText=before.slice(lt_),tm=/^<([\w:-]+)/.exec(tagText),tag=tm?tm[1].toLowerCase():'';
+      var vm=/([\w:-]+)\s*=\s*(["'])[^"']*$/.exec(tagText);
+      if(vm)return attrValues(tag,vm[1].toLowerCase());
+      if(/\s/.test(tagText))return attrItems(tag,tagText);
+      return [];
+    }
+    if(prefix.length>=2)return [HTML5,HCOMMENT].concat(TAGS_BARE);
+    return [];
+  }
 
   var smart={
     triggerCharacters:['.','<'],
@@ -123,20 +242,16 @@
         else if(/^\s*(import|from)\s+$/.test(before))out=PY_MODS;
         else out=PY_ALL;
       }else if(kind==='js'){
-        if(/^\s*\/\//.test(line)||odd(before,'"')||odd(before,"'")||odd(before,'`'))out=[];
-        else if((m=/([A-Za-z_$][\w$]*)\.$/.exec(before)))out=JSM[m[1]]||JSM_ANY;
-        else if(/[\)\]"']\.$/.test(before))out=JSM_ANY;
-        else out=JS_ALL;
+        out=jsList(before,line);
       }else if(kind==='html'){
-        var lt_=before.lastIndexOf('<'),gt=before.lastIndexOf('>');
-        if(/<$/.test(before))out=TAGS;
-        else if(lt_>gt&&/\s/.test(before.slice(lt_)))out=ATTRS;
+        out=htmlList(sess,pos,prefix,before);
       }else if(kind==='css'){
-        out=/:[^;{}]*$/.test(before)?CSS_VALS:CSS_PROPS;
+        out=cssList(allText(sess,pos,prefix));
       }
       cb(null,out);
     }
   };
+
   /* для CSS в слово входит дефис (font-size) */
   Object.defineProperty(smart,'identifierRegexps',{get:function(){return [fileKind()==='css'?/[\w\-]/:/[\w$]/]}});
 
