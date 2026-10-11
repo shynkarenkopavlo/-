@@ -2,17 +2,21 @@
 <html lang="ru">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, interactive-widget=resizes-content">
 <title>UniIDE — онлайн-редактор кода: Python, JavaScript, HTML</title>
 <link rel="icon" href="img/favicon.ico" sizes="any">
 <link rel="icon" type="image/png" sizes="32x32" href="img/favicon-32.png">
 <link rel="apple-touch-icon" href="img/apple-touch-icon.png">
 <meta name="theme-color" content="#6c5ce7">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap">
 <link rel="stylesheet" href="css/base.css">
 <link rel="stylesheet" href="css/header.css">
 <link rel="stylesheet" href="css/layout.css">
 <link rel="stylesheet" href="css/widgets.css">
 <link rel="stylesheet" href="css/editor.css">
+<link rel="stylesheet" href="css/mobile.css">
 </head>
 <body>
 <div class="app">
@@ -27,10 +31,10 @@
       <button class="lt" data-l="html"><i class="dot html"></i>HTML</button>
     </div>
     <span class="sp"></span>
-    <button class="btn" id="clr">Очистить</button>
+    <button class="btn" id="clr" title="Очистить терминал"><span class="ic">🗑</span><span class="tx">Очистить</span></button>
     <button class="btn icon" id="theme" title="Сменить тему">🌙</button>
-    <button class="btn stop" id="stop" style="display:none">■ Стоп</button>
-    <button class="run" id="run"><svg width="14" height="14" viewBox="0 0 24 24" fill="#fff"><path d="M6 4l14 8-14 8z"/></svg>Запустить</button>
+    <button class="btn stop" id="stop" style="display:none" title="Остановить выполнение"><span class="ic">■</span><span class="tx">Стоп</span></button>
+    <button class="run" id="run"><svg width="14" height="14" viewBox="0 0 24 24" fill="#fff"><path d="M6 4l14 8-14 8z"/></svg><span class="tx">Запустить</span></button>
   </header>
 
   <div class="body">
@@ -38,14 +42,14 @@
       <div class="sh"><span id="shl">Проект · Python</span></div>
       <div id="files"></div>
       <div class="sbtns">
-        <button class="btn pri" id="addf">＋ Новый файл</button>
+        <button class="btn pri" id="addf" title="Новый файл"><span class="ic">＋</span><span class="tx">Новый файл</span></button>
         <div class="types" id="types">
           <button class="btn t-html" data-x="html">HTML</button>
           <button class="btn t-css" data-x="css">CSS</button>
           <button class="btn t-js" data-x="js">JS</button>
         </div>
-        <button class="btn" id="dl">⬇ Скачать файл</button>
-        <button class="btn" id="rst">↺ Сбросить проект</button>
+        <button class="btn" id="dl" title="Скачать файл"><span class="ic">⬇</span><span class="tx">Скачать файл</span></button>
+        <button class="btn" id="rst" title="Сбросить проект"><span class="ic">↺</span><span class="tx">Сбросить проект</span></button>
       </div>
     </aside>
     <div class="gutter" id="gs" title="Потяните, чтобы изменить ширину панели файлов (двойной щелчок — сбросить)"></div>
@@ -53,6 +57,7 @@
     <section class="pane" id="paneEd">
       <div class="top"><div class="cur"><span class="ico" id="curico">PY</span><span id="curname">main.py</span></div><span class="hint"><kbd>Ctrl</kbd> + <kbd>Enter</kbd> — запуск</span></div>
       <div class="ed"><div id="ace"></div></div>
+      <div id="keys" role="toolbar" aria-label="Панель символов"></div>
     </section>
     <div class="gutter" id="gv" title="Потяните, чтобы изменить размер кода и терминала (двойной щелчок — сбросить)"></div>
 
@@ -101,5 +106,6 @@
 <script src="js/11-main.js"></script>
 <script src="js/12-html-tools.js"></script>
 <script src="js/13-layout.js"></script>
+<script src="js/14-mobile.js"></script>
 </body>
 </html>

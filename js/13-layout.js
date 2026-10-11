@@ -4,11 +4,12 @@
   var aside=document.querySelector('aside'),edPane=$('paneEd'),outPane=$('paneOut'),gv=$('gv'),gs=$('gs');
   if(!body||!aside||!edPane||!outPane||!gv||!gs)return;
 
-  var st={sbw:200,ed:1000,out:1000};            /* ширина панели файлов (px) и доли редактора/терминала */
+  var st={sbw:200,ed:1000,out:1000},saved=false;            /* ширина панели файлов (px) и доли редактора/терминала */
   try{
     var s=JSON.parse(localStorage.getItem(LKEY)||'null');
-    if(s&&s.v===1&&s.sbw>=120&&s.ed>0&&s.out>0){st.sbw=s.sbw;st.ed=s.ed;st.out=s.out}
+    if(s&&s.v===1&&s.sbw>=120&&s.ed>0&&s.out>0){st.sbw=s.sbw;st.ed=s.ed;st.out=s.out;saved=true}
   }catch(e){}
+  if(!saved&&window.matchMedia('(max-width:900px)').matches){st.ed=1150;st.out=850}
 
   function apply(){
     body.style.setProperty('--sbw',st.sbw+'px');

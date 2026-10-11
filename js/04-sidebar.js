@@ -63,10 +63,11 @@ $('addf').onclick=function(){if(lang==='html')$('types').classList.toggle('show'
 document.querySelectorAll('#types .btn').forEach(function(b){b.onclick=function(){$('types').classList.remove('show');addFile(b.dataset.x)}});
 $('dl').onclick=download;
 var rstT=null;
+function rstLabel(armed){var b=$('rst');b.classList.toggle('armed',armed);b.querySelector('.tx').textContent=armed?(window.matchMedia('(max-width:900px)').matches?'Точно?':'Точно сбросить?'):'Сбросить проект'}
 $('rst').onclick=function(){
   var b=$('rst');
-  if(!b.dataset.arm){b.dataset.arm='1';b.textContent='Точно сбросить?';rstT=setTimeout(function(){delete b.dataset.arm;b.textContent='↺ Сбросить проект'},3000);return}
-  clearTimeout(rstT);delete b.dataset.arm;b.textContent='↺ Сбросить проект';
+  if(!b.dataset.arm){b.dataset.arm='1';rstLabel(true);rstT=setTimeout(function(){delete b.dataset.arm;rstLabel(false)},3000);return}
+  clearTimeout(rstT);delete b.dataset.arm;rstLabel(false);
   LANGS[lang].files=JSON.parse(JSON.stringify(DEFAULTS[lang].files));active[lang]=0;
   problems=[];renderProbs();openFile(0);saveState();
 };

@@ -1,7 +1,7 @@
 /* ---------- тема ---------- */
 var theme=(window.matchMedia&&matchMedia('(prefers-color-scheme: dark)').matches)?'dark':'light';
 var aceEd=ace.edit('ace');
-aceEd.setOptions({showLineNumbers:true,showGutter:true,highlightActiveLine:true,showPrintMargin:false,fontSize:14,displayIndentGuides:true,highlightIndentGuides:true});
+aceEd.setOptions({showLineNumbers:true,showGutter:true,highlightActiveLine:true,showPrintMargin:false,fontSize:14,displayIndentGuides:true,highlightIndentGuides:true,fontFamily:'"JetBrains Mono",ui-monospace,Menlo,Consolas,monospace'});
 aceEd.commands.addCommand({name:'run',bindKey:{win:'Ctrl-Enter',mac:'Command-Enter'},exec:function(){run()}});
 function setTheme(t){
   theme=t;document.documentElement.dataset.theme=t;
