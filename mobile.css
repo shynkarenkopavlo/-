@@ -1,0 +1,69 @@
+/* ---------- панель символов (на телефоне нет { } [ ] Tab) ---------- */
+#keys{display:none;gap:6px;padding:6px 8px;overflow-x:auto;border-top:1px solid var(--line);background:var(--panel2);-webkit-overflow-scrolling:touch;scrollbar-width:none}
+#keys::-webkit-scrollbar{display:none}
+#keys button{flex:none;min-width:38px;height:36px;padding:0 10px;border-radius:9px;border:1px solid var(--line);background:var(--panel);color:var(--text);font:600 15px "JetBrains Mono",ui-monospace,Menlo,Consolas,monospace;cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent}
+#keys button.wide{padding:0 14px}
+#keys button:active{background:var(--accent);border-color:var(--accent);color:#fff}
+@media (max-width:900px),(pointer:coarse){#keys{display:flex}}
+
+/* ---------- телефон и планшет ---------- */
+@media (max-width:900px){
+  body{padding:0}
+  .app{width:100%;height:100vh;height:100dvh;border-radius:0;border:0;padding-top:env(safe-area-inset-top,0px)}
+
+  /* шапка: логотип и кнопки в одной строке, ниже — выбор языка */
+  header{gap:8px;padding:8px 10px}
+  .brand{order:1;margin-right:0}
+  .brand small{display:none}
+  .sp{order:2}
+  header .btn,header .run{order:3}
+  header .seg{order:4;flex:1 1 100%}
+  .lt{flex:1;justify-content:center;padding:9px 6px}
+  header .btn{padding:9px 11px}
+  header .btn .tx{display:none}            /* «Очистить» и «Стоп» — только значки */
+  .run{padding:10px 14px}
+
+  /* файлы проекта: горизонтальная лента + маленькие кнопки-значки */
+  aside{position:relative;flex-direction:row;align-items:center;overflow:visible;border-bottom:1px solid var(--line)}
+  #files{flex:1 1 0;min-width:0;display:flex;gap:6px;overflow-x:auto;padding:8px;-webkit-overflow-scrolling:touch;scrollbar-width:none;-webkit-mask-image:linear-gradient(to right,#000 88%,transparent);mask-image:linear-gradient(to right,#000 88%,transparent)}
+  #files::-webkit-scrollbar{display:none}
+  .fi{flex:none;margin:0;padding:6px 8px;gap:7px}
+  .fi .ico{width:22px;height:22px}
+  .fi .nm{overflow:visible;max-width:none}
+  .fi .x{opacity:1;padding:2px 6px;font-size:17px}
+  .sbtns{flex:none;flex-direction:row;align-items:center;gap:6px;border-top:0;padding:8px 8px 8px 0}
+  .sbtns .btn{width:40px;height:40px;padding:0;justify-content:center;font-size:17px}
+  .sbtns .btn .tx{display:none}
+  .sbtns .btn.armed{width:auto;padding:0 12px;background:var(--err);border-color:var(--err);color:#fff}
+  .sbtns .btn.armed .tx{display:inline;font-size:12px}
+  /* выбор типа нового файла (HTML / CSS / JS) — выпадающая панель под лентой файлов */
+  .types.show{position:absolute;right:8px;top:calc(100% + 4px);z-index:30;gap:6px;padding:8px;background:var(--panel);border:1px solid var(--line);border-radius:12px;box-shadow:var(--shadow)}
+  .sbtns .types .btn{width:auto;min-width:64px;padding:0 14px;font-size:13px}
+
+  /* редактор и терминал */
+  .top{height:42px}
+  #paneEd>.top{display:none}               /* имя файла и так видно в ленте файлов */
+  .hint{display:none}
+  .body{grid-template-columns:minmax(0,1fr);grid-template-rows:auto minmax(0,var(--ed)) 16px minmax(0,var(--out))}
+  aside,.pane{min-width:0}
+  #gv:after{width:48px;height:4px;margin:-2px 0 0 -24px}
+  .otabs{padding:0 6px}
+  .ot{padding:0 8px;font-size:11px;white-space:nowrap}
+  #stat{max-width:38%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  #termwrap,#probs{padding:10px 12px;font-size:13px}
+  #ti{font-size:16px}                       /* 16px — чтобы iPhone не увеличивал страницу при вводе */
+  .ace_text-input{font-size:16px!important}
+
+  /* нижняя строка и уведомления */
+  footer{padding:4px 12px calc(4px + env(safe-area-inset-bottom,0px))}
+  footer>span:last-child{display:none}
+  footer>span:first-child{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  #toast{left:8px;right:8px;width:auto;bottom:calc(34px + env(safe-area-inset-bottom,0px))}
+}
+@media (max-width:400px){
+  header .btn{padding:9px 9px}
+  .run{padding:10px 12px}
+}
+@media (max-width:360px){
+  .brand b{display:none}                    /* на очень узких экранах остаётся только логотип */
+}
