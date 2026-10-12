@@ -1,0 +1,14 @@
+{
+  "name": "UniIDE — онлайн-редактор кода",
+  "short_name": "UniIDE",
+  "description": "Онлайн-редактор кода для Python, JavaScript и HTML прямо в браузере.",
+  "start_url": ".",
+  "display": "standalone",
+  "background_color": "#0c0f1a",
+  "theme_color": "#6c5ce7",
+  "lang": "ru",
+  "icons": [
+    { "src": "img/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "img/apple-touch-icon.png", "sizes": "180x180", "type": "image/png" }
+  ]
+}

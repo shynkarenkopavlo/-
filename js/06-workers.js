@@ -60,7 +60,9 @@ function jsWorkerFn(){
       }catch(err){
         flush();
         var m=/<anonymous>:(\d+):\d+/.exec(String(err&&err.stack||''));
-        postMessage({t:'err',m:String(err),line:m?Math.max(1,+m[1]-2):null});
+        var em=String(err),hint='';
+        if(/\b(document|window|alert|prompt|confirm|localStorage|sessionStorage|navigator) is not defined/.test(em))hint='\n💡 На вкладке JavaScript код работает в фоне, без страницы: document, window, alert и prompt здесь недоступны. Для работы со страницей используйте вкладку HTML.';
+        postMessage({t:'err',m:em+hint,line:m?Math.max(1,+m[1]-2):null});
       }
       postMessage({t:'done'});
     })();

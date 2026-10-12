@@ -21,7 +21,7 @@ function saveState(){
     $('sbsave').textContent='Сохранено на устройстве · '+new Date().toTimeString().slice(0,8);
   }catch(e){$('sbsave').textContent='Автосохранение недоступно в этом окружении'}
 }
-function scheduleSave(){clearTimeout(saveT);saveT=setTimeout(saveState,400)}
+function scheduleSave(){clearTimeout(saveT);saveT=setTimeout(saveState,800)}
 function loadState(){
   try{
     var raw=localStorage.getItem(KEY);if(!raw)return;

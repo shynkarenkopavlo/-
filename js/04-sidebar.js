@@ -31,11 +31,24 @@ function rename(i,span){
     if(done)return;done=true;
     var n=inp.value.trim().replace(/[\\\/]/g,'');
     if(auto&&n){if(n.toLowerCase()===tail)n='';else if(!hasTail(n))n+=tail}
-    if(ok&&n&&!LANGS[lang].files.some(function(g,j){return j!==i&&g.name===n})){f.name=n;if(f.sess){f.sess.setMode(modeFor(n));sessOpts(f)}}
+    if(ok&&n&&!LANGS[lang].files.some(function(g,j){return j!==i&&g.name===n})){
+      var old=f.name;f.name=n;if(f.sess){f.sess.setMode(modeFor(n));sessOpts(f)}
+      if(lang==='html'&&old!==n)fixRefs(old,n);
+    }
     renderTabs();
   }
   inp.onblur=function(){fin(true)};
   inp.onkeydown=function(e){if(e.key==='Enter')fin(true);if(e.key==='Escape')fin(false)};
+}
+/* после переименования файла в HTML-проекте обновляем ссылки href="…" / src="…" в остальных HTML-файлах */
+function fixRefs(oldN,newN){
+  var q=oldN.replace(/[.*+?^${}()|[\]\\]/g,'\\$&'),re=new RegExp('((?:href|src)\\s*=\\s*)(["\'])(?:\\.\\/)?'+q+'\\2','g'),cnt=0;
+  LANGS.html.files.forEach(function(g){
+    if(!/\.html?$/i.test(g.name))return;
+    var c=fileCode(g),r=c.replace(re,function(m,a,b){cnt++;return a+b+newN+b});
+    if(r!==c){if(g.sess)g.sess.setValue(r);else g.code=r}
+  });
+  if(cnt)notify('Ссылки на «'+oldN+'» обновлены на «'+newN+'» ('+cnt+').');
 }
 function download(){
   var f=curFile(),b=new Blob([fileCode(f)],{type:'text/plain;charset=utf-8'}),a=document.createElement('a');

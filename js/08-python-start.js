@@ -4,7 +4,7 @@ async function startPython(){
   if(starting)return;starting=true;setMode('loading');
   if(WORKERS===null){
     WORKERS=await probeWorkers();
-    if(!WORKERS)notify('Режим совместимости: Web Worker заблокированы. Лимит вывода 2 МБ работает, но «Стоп» не прервёт цикл без вывода.');
+    if(!WORKERS)notify('Режим совместимости: Web Worker заблокированы. Лимит вывода 2 МБ работает, но «Стоп» не прервёт цикл без вывода (в Python и в JavaScript).');
   }
   await initSkulpt();
   if(engine){
