@@ -1,5 +1,28 @@
 /* ---------- сайдбар ---------- */
-function openFile(i){active[lang]=i;aceEd.setSession(sess(curFile()));renderTabs();annotate();updPos();aceEd.focus()}
+var emptySess=null;
+/* бинарный файл: вместо редактора показываем карточку (для картинок, видео и звука — ещё и предпросмотр) */
+function showBin(f){
+  var v=$('binview');v.innerHTML='';
+  var mime=dataMime(f.data),el;
+  if(/^image\//.test(mime)){el=document.createElement('img');el.alt=f.name;el.src=f.data}
+  else if(/^video\//.test(mime)){el=document.createElement('video');el.controls=true;el.src=f.data}
+  else if(/^audio\//.test(mime)){el=document.createElement('audio');el.controls=true;el.src=f.data}
+  else{el=mkIco(f.name);el.style.cssText='width:56px;height:56px;font-size:15px;border-radius:14px'}
+  var n=document.createElement('div');n.className='bn';n.textContent=f.name;
+  var m=document.createElement('div');m.className='bm';m.textContent=mime+' · '+fmtSize(dataSize(f.data))+' · редактирование недоступно';
+  var b=document.createElement('button');b.className='btn';b.textContent='⬇ Скачать файл';b.onclick=download;
+  v.appendChild(el);v.appendChild(n);v.appendChild(m);v.appendChild(b);
+}
+function openFile(i){
+  active[lang]=i;var f=curFile(),bv=$('binview');
+  if(f.data!==undefined){
+    if(!emptySess){emptySess=ace.createEditSession('');try{emptySess.setUseWorker(false)}catch(x){}}
+    aceEd.setSession(emptySess);aceEd.setReadOnly(true);showBin(f);bv.classList.add('show');
+  }else{
+    bv.classList.remove('show');bv.innerHTML='';aceEd.setReadOnly(false);aceEd.setSession(sess(f));
+  }
+  renderTabs();annotate();updPos();if(f.data===undefined)aceEd.focus();
+}
 function addFile(ext){
   var L=LANGS[lang],n=1,name;ext=ext||L.ext;
   do{name='file'+(n++)+'.'+ext}while(L.files.some(function(f){return f.name===name}));
@@ -19,7 +42,7 @@ function closeFile(i){
 function rename(i,span){
   var f=LANGS[lang].files[i],inp=document.createElement('input'),done=false;
   /* в Python и JavaScript расширение (.py / .js) подставляется автоматически; в HTML имя вводится целиком */
-  var auto=(lang==='python'||lang==='js')?LANGS[lang].ext:null;
+  var auto=((lang==='python'||lang==='js')&&f.name.toLowerCase().slice(-(LANGS[lang].ext.length+1))==='.'+LANGS[lang].ext)?LANGS[lang].ext:null;
   var tail=auto?'.'+auto:'';
   var hasTail=function(n){return !!tail&&n.toLowerCase().slice(-tail.length)===tail};
   var base=f.name;if(hasTail(base))base=base.slice(0,-tail.length);
@@ -51,7 +74,7 @@ function fixRefs(oldN,newN){
   if(cnt)notify('Ссылки на «'+oldN+'» обновлены на «'+newN+'» ('+cnt+').');
 }
 function download(){
-  var f=curFile(),b=new Blob([fileCode(f)],{type:'text/plain;charset=utf-8'}),a=document.createElement('a');
+  var f=curFile(),b=f.data!==undefined?new Blob([dataToBytes(f.data)],{type:dataMime(f.data)}):new Blob([fileCode(f)],{type:'text/plain;charset=utf-8'}),a=document.createElement('a');
   a.href=URL.createObjectURL(b);a.download=f.name;document.body.appendChild(a);a.click();a.remove();
   setTimeout(function(){URL.revokeObjectURL(a.href)},1000);
 }

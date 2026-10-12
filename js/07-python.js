@@ -114,7 +114,7 @@ async function initPyodide(){
 async function execPy(src,repl){
   setMode('running');
   var p=attach(pyW,'pyodide',repl);
-  pyW.postMessage({t:'run',src:src,repl:!!repl,files:repl?[]:filesPayload()});
+  pyW.postMessage({t:'run',src:src,repl:!!repl,files:repl?[]:allFilesPayload()});
   await p;pending=null;setMode('idle');
 }
 

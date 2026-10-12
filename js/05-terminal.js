@@ -95,5 +95,5 @@ function ainput(p){
 }
 function timeout(p,ms,msg){return Promise.race([p,new Promise(function(_,rej){setTimeout(function(){rej(new Error(msg))},ms)})])}
 function loadScript(src){return new Promise(function(res,rej){var s=document.createElement('script');s.src=src;s.onload=res;s.onerror=function(){rej(new Error('не удалось скачать '+src))};document.head.appendChild(s)})}
-function otherPyFiles(){var cf=curFile();return LANGS.python.files.filter(function(f){return f!==cf&&/\.py$/i.test(f.name)})}
+function otherPyFiles(){var cf=curFile();return LANGS.python.files.filter(function(f){return f!==cf&&f.data===undefined&&/\.py$/i.test(f.name)})}
 

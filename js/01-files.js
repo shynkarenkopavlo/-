@@ -14,7 +14,7 @@ var LANGS={
 };
 var DEFAULTS=JSON.parse(JSON.stringify(LANGS)),KEY='uniide:projects:v1';
 var active={python:0,js:0,html:0},lang='python',outTab='main';
-var MODES={py:'python',js:'javascript',html:'html',htm:'html',css:'css',json:'json',md:'markdown',txt:'text'};
+var MODES={py:'python',js:'javascript',mjs:'javascript',html:'html',htm:'html',css:'css',json:'json',md:'markdown',txt:'text',xml:'xml',svg:'xml',yml:'yaml',yaml:'yaml',sql:'sql',java:'java',c:'c_cpp',cpp:'c_cpp',h:'c_cpp',cs:'csharp',go:'golang',rs:'rust',php:'php',rb:'ruby',ts:'typescript',sh:'sh',bat:'batchfile',ini:'ini',toml:'toml',jsx:'jsx',scss:'scss',less:'less'};
 function extOf(n){return n.split('.').pop().toLowerCase()}
 function modeFor(n){return 'ace/mode/'+(MODES[extOf(n)]||'text')}
 /* Python — отступ 4 пробела, HTML/CSS/JS — 2; встроенные проверки-воркеры Ace отключены */
@@ -30,3 +30,9 @@ function sess(f){
 function fileCode(f){return f.sess?f.sess.getValue():f.code}
 function curFile(){return LANGS[lang].files[active[lang]]}
 
+/* ---------- бинарные файлы (картинки, архивы и т.п.): хранятся как data-URL в поле f.data ---------- */
+var EMPTY_DATA='data:application/octet-stream;base64,';
+function dataToBytes(u){var b=atob(u.slice(u.indexOf(',')+1)),a=new Uint8Array(b.length);for(var k=0;k<b.length;k++)a[k]=b.charCodeAt(k);return a}
+function dataMime(u){var m=/^data:([^;,]*)/.exec(u);return (m&&m[1])||'application/octet-stream'}
+function dataSize(u){var i=u.indexOf(','),n=u.length-i-1,p=/==$/.test(u)?2:/=$/.test(u)?1:0;return Math.max(0,Math.floor(n*3/4)-p)}
+function fmtSize(n){return n<1024?n+' Б':n<1048576?(n/1024).toFixed(1)+' КБ':(n/1048576).toFixed(1)+' МБ'}

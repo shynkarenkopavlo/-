@@ -55,6 +55,8 @@
           <button class="btn t-css" data-x="css">CSS</button>
           <button class="btn t-js" data-x="js">JS</button>
         </div>
+        <button class="btn" id="upl" title="Загрузить файлы с устройства (или перетащите их в окно)"><span class="ic">⬆</span><span class="tx">Загрузить файл</span></button>
+        <input type="file" id="upf" multiple hidden>
         <button class="btn" id="dl" title="Скачать файл"><span class="ic">⬇</span><span class="tx">Скачать файл</span></button>
         <button class="btn" id="rst" title="Сбросить проект"><span class="ic">↺</span><span class="tx">Сбросить проект</span></button>
       </div>
@@ -63,7 +65,7 @@
 
     <section class="pane" id="paneEd">
       <div class="top"><div class="cur"><span class="ico" id="curico">PY</span><span id="curname">main.py</span></div><span class="hint"><kbd>Ctrl</kbd> + <kbd>Enter</kbd> — запуск</span></div>
-      <div class="ed"><div id="ace"></div></div>
+      <div class="ed"><div id="ace"></div><div id="binview"></div></div>
       <div id="keys" role="toolbar" aria-label="Панель символов"></div>
     </section>
     <div class="gutter" id="gv" title="Потяните, чтобы изменить размер кода и терминала (двойной щелчок — сбросить)"></div>
@@ -114,5 +116,6 @@
 <script src="js/12-html-tools.js"></script>
 <script src="js/13-layout.js"></script>
 <script src="js/14-mobile.js"></script>
+<script src="js/15-upload.js"></script>
 </body>
 </html>

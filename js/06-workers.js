@@ -119,8 +119,8 @@ function pyWorkerFn(){
     try{
       if(!d.repl){
         newNs();
-        d.files.forEach(function(f){py.FS.writeFile('/home/pyodide/'+f.name,f.code)});
-        py.runPython('import sys, importlib\nimportlib.invalidate_caches()\nfor m in '+JSON.stringify(d.files.map(function(f){return f.name.replace(/\.py$/i,'')}))+':\n    sys.modules.pop(m, None)');
+        d.files.forEach(function(f){py.FS.writeFile('/home/pyodide/'+f.name,f.bytes||f.code)});
+        py.runPython('import sys, importlib\nimportlib.invalidate_caches()\nfor m in '+JSON.stringify(d.files.filter(function(f){return /\.py$/i.test(f.name)}).map(function(f){return f.name.replace(/\.py$/i,'')}))+':\n    sys.modules.pop(m, None)');
       }
       var r=await py.runPythonAsync(tr(d.src),{globals:ns});
       if(d.repl&&r!==undefined)out(String(rp(r))+'\n','');
@@ -203,4 +203,10 @@ function kill(reason){
 }
 $('stop').onclick=function(){kill('stop')};
 function filesPayload(){return otherPyFiles().map(function(f){return {name:f.name,code:fileCode(f)}})}
-
+/* для Pyodide в «файловую систему» Python кладём все остальные файлы проекта, включая загруженные (текст и бинарные) — их можно читать через open() */
+function allFilesPayload(){
+  var cf=curFile();
+  return LANGS.python.files.filter(function(f){return f!==cf}).map(function(f){
+    return f.data!==undefined?{name:f.name,bytes:dataToBytes(f.data)}:{name:f.name,code:fileCode(f)};
+  });
+}

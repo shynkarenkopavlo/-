@@ -1,6 +1,11 @@
 /* ---------- кнопка «Запустить» ---------- */
 async function run(){
-  var f=curFile();runFile=f.name;var src=fileCode(f);
+  var f=curFile();runFile=f.name;
+  if(lang!=='html'){
+    var want=lang==='python'?/\.py$/i:/\.js$/i;
+    if(f.data!==undefined||!want.test(f.name)){notify('Чтобы запустить код, выберите файл '+(lang==='python'?'.py':'.js')+' в списке файлов.');return}
+  }
+  var src=fileCode(f);
   if(lang!=='html'&&job){notify('Программа ещё выполняется — нажмите «Стоп» или дождитесь окончания.');return}
   problems=[];renderProbs();
   if(lang==='html'){frame.srcdoc=buildHtml();return}

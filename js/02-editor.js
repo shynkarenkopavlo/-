@@ -12,14 +12,29 @@ $('theme').onclick=function(){setTheme(theme==='dark'?'light':'dark');scheduleSa
 setTheme(theme);
 
 /* ---------- сохранение проектов на этом устройстве (localStorage) ---------- */
-var saveT=null;
+var saveT=null,binWarned=false;
+function serial(withBin){
+  var o={v:1,lang:lang,theme:theme,active:active,langs:{}};
+  Object.keys(LANGS).forEach(function(l){o.langs[l]=LANGS[l].files.map(function(f){
+    var r={name:f.name,code:fileCode(f)};
+    if(f.data!==undefined)r.data=withBin?f.data:EMPTY_DATA;
+    return r;
+  })});
+  return JSON.stringify(o);
+}
 function saveState(){
+  var t=new Date().toTimeString().slice(0,8);
   try{
-    var o={v:1,lang:lang,theme:theme,active:active,langs:{}};
-    Object.keys(LANGS).forEach(function(l){o.langs[l]=LANGS[l].files.map(function(f){return {name:f.name,code:fileCode(f)}})});
-    localStorage.setItem(KEY,JSON.stringify(o));
-    $('sbsave').textContent='Сохранено на устройстве · '+new Date().toTimeString().slice(0,8);
-  }catch(e){$('sbsave').textContent='Автосохранение недоступно в этом окружении'}
+    localStorage.setItem(KEY,serial(true));
+    $('sbsave').textContent='Сохранено на устройстве · '+t;
+  }catch(e){
+    /* не хватило места (обычно из-за больших загруженных файлов) — сохраняем хотя бы тексты */
+    try{
+      localStorage.setItem(KEY,serial(false));
+      $('sbsave').textContent='Сохранено без загруженных бинарных файлов · '+t;
+      if(!binWarned){binWarned=true;notify('В браузере не хватило места: тексты сохранены, а загруженные бинарные файлы (картинки и т. п.) после перезагрузки страницы пропадут.','e')}
+    }catch(e2){$('sbsave').textContent='Автосохранение недоступно в этом окружении'}
+  }
 }
 function scheduleSave(){clearTimeout(saveT);saveT=setTimeout(saveState,800)}
 function loadState(){
@@ -29,7 +44,7 @@ function loadState(){
     ['python','js','html'].forEach(function(l){
       var a=o.langs&&o.langs[l];
       if(Array.isArray(a)&&a.length&&a.every(function(f){return f&&typeof f.name==='string'&&typeof f.code==='string'}))
-        LANGS[l].files=a.map(function(f){return {name:f.name,code:f.code}});
+        LANGS[l].files=a.map(function(f){var r={name:f.name,code:f.code};if(typeof f.data==='string')r.data=f.data;return r});
       var i=o.active&&o.active[l];
       active[l]=(typeof i==='number'&&i>=0&&i<LANGS[l].files.length)?i:0;
     });
