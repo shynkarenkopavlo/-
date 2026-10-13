@@ -15,7 +15,8 @@ var LANGS={
 var DEFAULTS=JSON.parse(JSON.stringify(LANGS)),KEY='uniide:projects:v1';
 var active={python:0,js:0,html:0},lang='python',outTab='main';
 var MODES={py:'python',js:'javascript',mjs:'javascript',html:'html',htm:'html',css:'css',json:'json',md:'markdown',txt:'text',xml:'xml',svg:'xml',yml:'yaml',yaml:'yaml',sql:'sql',java:'java',c:'c_cpp',cpp:'c_cpp',h:'c_cpp',cs:'csharp',go:'golang',rs:'rust',php:'php',rb:'ruby',ts:'typescript',sh:'sh',bat:'batchfile',ini:'ini',toml:'toml',jsx:'jsx',scss:'scss',less:'less'};
-function extOf(n){return n.split('.').pop().toLowerCase()}
+function extOf(n){return n.split('/').pop().split('.').pop().toLowerCase()}
+function dirOf(n){var i=n.lastIndexOf('/');return i>-1?n.slice(0,i+1):''}   /* «src/utils/» или '' */
 function modeFor(n){return 'ace/mode/'+(MODES[extOf(n)]||'text')}
 /* Python — отступ 4 пробела, HTML/CSS/JS — 2; встроенные проверки-воркеры Ace отключены */
 function sessOpts(f){var e=extOf(f.name);f.sess.setTabSize(e==='py'?4:2);f.sess.setUseSoftTabs(true)}

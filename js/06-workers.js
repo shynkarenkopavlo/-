@@ -119,8 +119,11 @@ function pyWorkerFn(){
     try{
       if(!d.repl){
         newNs();
-        d.files.forEach(function(f){py.FS.writeFile('/home/pyodide/'+f.name,f.bytes||f.code)});
-        py.runPython('import sys, importlib\nimportlib.invalidate_caches()\nfor m in '+JSON.stringify(d.files.filter(function(f){return /\.py$/i.test(f.name)}).map(function(f){return f.name.replace(/\.py$/i,'')}))+':\n    sys.modules.pop(m, None)');
+        d.files.forEach(function(f){
+          var cur='/home/pyodide';f.name.split('/').slice(0,-1).forEach(function(s){cur+='/'+s;try{py.FS.mkdir(cur)}catch(e){}});
+          py.FS.writeFile('/home/pyodide/'+f.name,f.bytes||f.code);
+        });
+        py.runPython('import sys, importlib\nimportlib.invalidate_caches()\nfor m in '+JSON.stringify(d.files.filter(function(f){return /\.py$/i.test(f.name)}).map(function(f){return f.name.replace(/\.py$/i,'').replace(/\//g,'.')}))+':\n    sys.modules.pop(m, None)');
       }
       var r=await py.runPythonAsync(tr(d.src),{globals:ns});
       if(d.repl&&r!==undefined)out(String(rp(r))+'\n','');

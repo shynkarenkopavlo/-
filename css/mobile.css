@@ -67,3 +67,4 @@
 @media (max-width:360px){
   .brand b{display:none}                    /* на очень узких экранах остаётся только логотип */
 }
+@media (pointer:coarse){#upd{display:none}}   /* выбор папок на телефонах обычно не поддерживается */
